@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GURU - JNTUK R23 Exam Evaluator</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #4a6cf7;
+      --secondary-color: #10b981;
+      --background-color: #f4f6f8;
+      --text-color: #2c3e50;
+      --border-radius: 14px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.75rem;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    select, .form-select {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid #dcdcdc;
+    }
+
+    select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.25);
+    }
+
+    button {
+      font-weight: 600;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    #randomBtn {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    #randomBtn:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    #startExamBtn {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    #startExamBtn:hover {
+      background-color: #059669;
+      transform: translateY(-1px);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    #timerDisplay {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: center;
+      background: var(--background-color);
+      padding: 15px;
+      z-index: 100;
+    }
+
+    #pdfViewer {
+      width: 100%;
+      height: 500px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      margin-top: 1.5rem;
+      display: none;
+      margin-bottom: 24px;
+    }
+
+    #fileInput {
+      width: 100%;
+      padding: 1rem;
+      border: 2px dashed #ccc;
+      border-radius: var(--border-radius);
+      background-color: #fafafa;
+      margin-top: 1rem;
+    }
+
+    #submitAnswersBtn {
+      background-color: var(--primary-color);
+      color: white;
+      margin-top: 1rem;
+    }
+
+    #submitAnswersBtn:hover {
+      background-color: #3759e5;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      resize: vertical;
+    }
+
+    ul#fileList {
+      padding-left: 1rem;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+            <p id="timerDisplay"></p>
+    <h1>📘 GURU - JNTUK R23 Exam Evaluator</h1>
+
+    <div class="card mb-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <label for="subjectSelect" class="form-label fw-semibold">Choose Your Subject</label>
+          <select id="subjectSelect" class="form-select">
+            <option value="" disabled selected>-- Select Subject --</option>
+            <option value="devc">DEVC (M2)</option>
+            <option value="physics">Engineering Physics</option>
+            <option value="ds">Data Structures</option>
+            <option value="beee">BEEE</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+          <button id="randomBtn" class="btn w-100">
+            🎲 Random PYQ
+          </button>
+        </div>
+
+        <div class="col-12 mt-3" id="paperSection" style="display: none;">
+          <label for="pyqSelect" class="form-label fw-semibold">Choose PYQ to Start:</label>
+          <select id="pyqSelect" class="form-select mb-3"></select>
+          <button id="startExamBtn" class="btn w-100">Start Exam</button>
+        </div>
+      </div>
+    </div>
+
+    <iframe id="pdfViewer"></iframe>
+
+    <div id="uploadSection" class="card" style="display:none;">
+      <h3>📤 Upload Your Answer Sheets</h3>
+      <input type="file" id="fileInput" multiple accept="image/*,application/pdf" />
+      <p>You can upload up to 34 files (images or PDFs)</p>
+      <button id="submitAnswersBtn" class="btn" style="display:none;">Submit for Evaluation</button>
+      <ul id="fileList"></ul>
+    </div>
+
+    <div id="evaluationResult" class="card mt-4" style="display:none;">
+      <h3>🧠 AI Evaluation Result</h3>
+      <textarea id="aiFeedback" rows="15"></textarea>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (Optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
